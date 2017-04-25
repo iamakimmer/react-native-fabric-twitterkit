@@ -7,6 +7,7 @@ package com.tkporter.fabrictwitterkit;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -87,9 +88,13 @@ public class FabricTwitterKitModule extends ReactContextBaseJavaModule implement
         try {
             this.callback = callback;
 
-            String body = options.hasKey("body") ? options.getString("body") : "";
+            String text = options.hasKey("text") ? options.getString("text") : "";
+            String imageUrl = options.hasKey("imageUrl") ? options.getString("imageUrl") : null;
 
-            TweetComposer.Builder builder = new TweetComposer.Builder(reactContext).text(body);
+            TweetComposer.Builder builder = new TweetComposer.Builder(reactContext).text(text);
+            if (imageUrl != null) {
+                builder.image(Uri.parse(imageUrl));
+            }
             final Intent intent = builder.createIntent();
             reactContext.startActivityForResult(intent, REQUEST_CODE, intent.getExtras());
 

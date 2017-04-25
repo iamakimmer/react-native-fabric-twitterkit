@@ -148,12 +148,24 @@ RCT_EXPORT_METHOD(fetchTweet:(NSDictionary *)options :(RCTResponseSenderBlock)ca
 
 RCT_EXPORT_METHOD(composeTweet:(NSDictionary *)options :(RCTResponseSenderBlock)callback) {
 
-    NSString *body = options[@"body"];
+    NSString *text = options[@"text"];
+    NSString *imageUrl = options[@"imageUrl"];
 
     TWTRComposer *composer = [[TWTRComposer alloc] init];
 
-    if (body) {
-        [composer setText:body];
+    if (text) {
+        [composer setText:text];
+    }
+    
+    if (imageUrl) {
+        NSURL* url = [NSURL URLWithString:imageUrl];
+        UIImage* image;
+        if ([url isFileURL]) {
+            image = [UIImage imageWithContentsOfFile:url.path];
+        } else {
+            image = [UIImage imageWithData:[NSData dataWithContentsOfURL:url]];
+        }
+        [composer setImage:image];
     }
 
     UIViewController *rootView = [UIApplication sharedApplication].keyWindow.rootViewController;
